@@ -2,6 +2,7 @@
   "name": "wave",
   "displayName": "Wave",
   "description": "Wave Language Support",
+  "repository": "https://github.com/wavefun/wave-vscode",
   "version": "0.2.1",
   "engines": {
     "vscode": "^1.102.0"
@@ -15,7 +16,7 @@
   "activationEvents": [
     "onLanguage:wave"
   ],
-  "main": "./src/extension.js",
+  "main": "./src/extension.ts",
   "contributes": {
     "languages": [
       {
