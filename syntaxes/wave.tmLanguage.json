@@ -23,7 +23,7 @@
       "patterns": [
         {
           "name": "keyword.control.wave",
-          "match": "\\b(fun|var|let|mut|return|if|else|while|continue|break|import)\\b"
+          "match": "\\b(fun|var|return|if|else|while|for|break|continue|import|extern|struct|enum)\\b"
         }
       ]
     },
@@ -31,7 +31,19 @@
       "patterns": [
         {
           "name": "storage.type.wave",
-          "match": "\\b(i32|f32|str|bool)\\b"
+          "match": "\\b(i8|i16|i32|i64|u8|u16|u32|u64|f32|f64|bool|byte|str)\\b"
+        },
+        {
+          "name": "storage.type.container.wave",
+          "match": "\\b(ptr|array)\\b"
+        },
+        {
+          "name": "punctuation.definition.typeparameters.begin.wave",
+          "match": "<"
+        },
+        {
+          "name": "punctuation.definition.typeparameters.end.wave",
+          "match": ">"
         }
       ]
     },
@@ -39,15 +51,18 @@
       "patterns": [
         {
           "name": "entity.name.function.main.wave",
-          "match": "\\bmain\\b"
+          "match": "\\bfun\\s+main\\b"
         }
       ]
     },
     "functions": {
       "patterns": [
         {
-          "name": "support.function.wave",
-          "match": "\\b(print|println|transform|display_pattern|process)\\b"
+          "name": "entity.name.function.wave",
+          "match": "\\bfun\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+          "captures": {
+            "1": { "name": "entity.name.function.wave" }
+          }
         }
       ]
     },
@@ -70,7 +85,7 @@
         },
         {
           "name": "variable.parameter.format.wave",
-          "match": "\\{\\}"
+          "match": "\\{[^}]*\\}"
         }
       ]
     },
@@ -86,7 +101,7 @@
       "patterns": [
         {
           "name": "keyword.operator.wave",
-          "match": "!=|==|<=|>=|<|>|\\+|\\-|\\*|\\/|%|\\+=|\\-=|\\*=|\\/=|&&|\\|\\||!"
+          "match": "!=|==|<=|>=|<|>|\\+|\\-|\\*|\\/|%|\\+=|\\-=|\\*=|\\/=|&&|\\|\\||!|\\?|:"
         }
       ]
     }
