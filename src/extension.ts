@@ -46,8 +46,12 @@ function resolveLanguageServer(context: vscode.ExtensionContext): ServerOptions 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
     const runWave = vscode.commands.registerCommand('wave.runCurrentFile', () => {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            vscode.window.showErrorMessage('No active editor!');
+        if (!editor || editor.document.languageId !== 'wave') {
+            vscode.window.showErrorMessage('Open a Wave file before running this command.');
+            return;
+        }
+        if (editor.document.isUntitled) {
+            vscode.window.showErrorMessage('Save the Wave file before running it.');
             return;
         }
 
@@ -81,6 +85,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     };
 
     const fileWatcher = vscode.workspace.createFileSystemWatcher('**/*.wave');
+    const importConfiguration = vscode.workspace.getConfiguration('wave.imports');
     const clientOptions: LanguageClientOptions = {
         documentSelector: [
             { scheme: 'file', language: 'wave' },
@@ -90,7 +95,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             fileEvents: fileWatcher
         },
         initializationOptions: {
-            client: 'vscode'
+            client: 'vscode',
+            imports: {
+                standardLibraryPath: importConfiguration.get<string>('standardLibraryPath', '').trim(),
+                dependencyRoots: importConfiguration.get<string[]>('dependencyRoots', []),
+                dependencies: importConfiguration.get<Record<string, string>>('dependencies', {})
+            }
         }
     };
     languageClient = new LanguageClient(
@@ -100,8 +110,27 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         clientOptions
     );
 
+    const restartLanguageServer = vscode.commands.registerCommand(
+        'wave.restartLanguageServer',
+        async () => {
+            if (!languageClient) {
+                return;
+            }
+            await languageClient.restart();
+            void vscode.window.showInformationMessage('Wave language server restarted.');
+        }
+    );
+    const configurationListener = vscode.workspace.onDidChangeConfiguration(event => {
+        if ((event.affectsConfiguration('wave.languageServer')
+            || event.affectsConfiguration('wave.imports')) && languageClient) {
+            void languageClient.restart();
+        }
+    });
+
     context.subscriptions.push(
         runWave,
+        restartLanguageServer,
+        configurationListener,
         fileWatcher,
         vscode.languages.registerCodeLensProvider('wave', codeLensProvider),
         languageClient
@@ -110,6 +139,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     try {
         await languageClient.start();
     } catch (error) {
+        languageClient = undefined;
         void vscode.window.showErrorMessage(
             `Unable to start wave-agape. Configure wave.languageServer.path or install it on PATH. ${String(error)}`
         );

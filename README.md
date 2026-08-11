@@ -14,6 +14,8 @@ shared `wave-agape` language server.
 - ✅ Diagnostics and parser errors
 - ✅ Completion and signature help
 - ✅ Hover and go to definition
+- ✅ Clickable `import("module");` paths and missing-import diagnostics
+- ✅ `std::` and external package import navigation and module completion
 - ✅ Document/workspace symbols and references
 - ✅ Rename
 
@@ -49,6 +51,11 @@ servers plus x64 and Apple Silicon macOS servers, uploads the VSIX as an
 Actions artifact, and publishes it to the VS Code Marketplace when the
 `VSCE_PAT` repository secret is set.
 
-The language-server source defaults to `wavefnd/wave-agape` at `master`. Set
+The language-server source defaults to `wavefnd/wave-agape` at `v0.2.0`. Set
 the `WAVE_AGAPE_REPOSITORY` and `WAVE_AGAPE_REF` repository variables to use a
 different repository or a pinned tag/commit.
+
+Wave imports follow the compiler's resolution rules. `std::io::format` resolves
+under `~/.wave/lib/wave/std`, while `package::module` resolves through
+`wave.imports.dependencyRoots` or the explicit `wave.imports.dependencies`
+mapping. Relative paths in these settings are resolved from the workspace.

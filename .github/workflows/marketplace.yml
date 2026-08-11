@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ vars.WAVE_AGAPE_REPOSITORY || 'wavefnd/wave-agape' }}
-          ref: ${{ vars.WAVE_AGAPE_REF || 'master' }}
+          ref: ${{ vars.WAVE_AGAPE_REF || 'v0.2.0' }}
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}

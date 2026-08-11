@@ -16,14 +16,19 @@
     "comments": {
       "patterns": [
         { "name": "comment.line.double-slash.wave", "match": "//.*$" },
-        { "name": "comment.block.wave", "begin": "/\\*", "end": "\\*/" }
+        {
+          "name": "comment.block.wave",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "patterns": [{ "include": "#comments" }]
+        }
       ]
     },
     "keywords": {
       "patterns": [
         {
           "name": "keyword.control.wave",
-          "match": "\\b(fun|var|return|if|else|while|for|break|continue|import|extern|struct|enum)\\b"
+          "match": "\\b(as|asm|break|class|clobber|const|continue|deref|else|enum|export|extern|false|for|fun|if|import|in|input|is|let|match|module|mut|null|out|print|println|proto|return|static|struct|true|type|var|while|xnand)\\b"
         }
       ]
     },
@@ -31,7 +36,7 @@
       "patterns": [
         {
           "name": "storage.type.wave",
-          "match": "\\b(i8|i16|i32|i64|u8|u16|u32|u64|f32|f64|bool|byte|str)\\b"
+          "match": "\\b(i8|i16|i32|i64|i128|i256|i512|i1024|isz|u8|u16|u32|u64|u128|u256|u512|u1024|usz|f32|f64|bool|byte|char|str|void)\\b"
         },
         {
           "name": "storage.type.container.wave",

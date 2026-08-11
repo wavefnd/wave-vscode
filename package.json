@@ -2,8 +2,8 @@
   "name": "wave",
   "displayName": "Wave",
   "description": "Wave Language Support",
-  "repository": "https://github.com/wavefun/wave-vscode",
-  "version": "0.3.0",
+  "repository": "https://github.com/wavefnd/wave-vscode",
+  "version": "0.3.1",
   "engines": {
     "vscode": "^1.102.0"
   },
@@ -18,8 +18,9 @@
   ],
   "main": "./out/extension.js",
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm test",
     "compile": "tsc -p ./",
+    "test": "npm run compile && node scripts/verify.mjs",
     "watch": "tsc --watch -p ./"
   },
   "contributes": {
@@ -44,6 +45,10 @@
       {
         "command": "wave.runCurrentFile",
         "title": "Run Wave Current File"
+      },
+      {
+        "command": "wave.restartLanguageServer",
+        "title": "Wave: Restart Language Server"
       }
     ],
     "configuration": {
@@ -66,6 +71,27 @@
           "type": "boolean",
           "default": false,
           "description": "Launch the Wave language server through WSL on Windows."
+        },
+        "wave.imports.standardLibraryPath": {
+          "type": "string",
+          "default": "",
+          "description": "Wave standard-library directory. Empty uses WAVE_STDLIB_PATH or ~/.wave/lib/wave/std."
+        },
+        "wave.imports.dependencyRoots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Directories containing external Wave packages, equivalent to wavec --dep-root."
+        },
+        "wave.imports.dependencies": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "External Wave package names mapped to directories, equivalent to wavec --dep name=path."
         },
         "wave.compiler.path": {
           "type": "string",
